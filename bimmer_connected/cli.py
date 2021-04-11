@@ -83,6 +83,16 @@ def main_parser() -> argparse.ArgumentParser:
     message_parser.add_argument('subject', help='(optional) Message subject', nargs='?')
     message_parser.set_defaults(func=send_message)
 
+    air_conditioning_parser = subparsers.add_parser('ac', description='Turn on air conditioning in thevehicle.')
+    _add_default_arguments(air_conditioning_parser)
+    air_conditioning_parser.add_argument('vin', help=TEXT_VIN)
+    air_conditioning_parser.set_defaults(func=turn_on_ac)
+
+    lock_parser = subparsers.add_parser('lock', description='Turn on air conditioning in thevehicle.')
+    _add_default_arguments(lock_parser)
+    lock_parser.add_argument('vin', help=TEXT_VIN)
+    lock_parser.set_defaults(func=lock)
+
     return parser
 
 
@@ -215,6 +225,18 @@ def send_message(args) -> None:
         subject=args.subject
     )
     vehicle.remote_services.trigger_send_message(msg_data)
+
+
+def turn_on_ac(args) -> None:
+    account = ConnectedDriveAccount(args.username, args.password, get_region_from_name(args.region))
+    vehicle = account.get_vehicle(args.vin)
+    vehicle.remote_services.trigger_remote_air_conditioning(False)
+
+
+def lock(args) -> None:
+    account = ConnectedDriveAccount(args.username, args.password, get_region_from_name(args.region))
+    vehicle = account.get_vehicle(args.vin)
+    vehicle.remote_services.trigger_remote_door_lock(False)
 
 
 def _add_default_arguments(parser: argparse.ArgumentParser):

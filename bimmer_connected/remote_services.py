@@ -151,7 +151,7 @@ class RemoteServices:
         self._trigger_remote_service(_Services.REMOTE_LIGHT_FLASH, post=True)
         return self._block_until_done(_Services.REMOTE_LIGHT_FLASH)
 
-    def trigger_remote_door_lock(self) -> RemoteServiceStatus:
+    def trigger_remote_door_lock(self, block = True) -> RemoteServiceStatus:
         """Trigger the vehicle to lock its doors.
 
         A state update is triggered after this, as the lock state of the vehicle changes.
@@ -159,6 +159,8 @@ class RemoteServices:
         _LOGGER.debug('Triggering remote door lock')
         # needs to be called via POST, GET is not working
         self._trigger_remote_service(_Services.REMOTE_DOOR_LOCK, post=True)
+        if not block:
+            return None
         result = self._block_until_done(_Services.REMOTE_DOOR_LOCK)
         self._trigger_state_update()
         return result
@@ -185,7 +187,7 @@ class RemoteServices:
         self._trigger_remote_service(_Services.REMOTE_HORN, post=True)
         return self._block_until_done(_Services.REMOTE_HORN)
 
-    def trigger_remote_air_conditioning(self) -> RemoteServiceStatus:
+    def trigger_remote_air_conditioning(self, block = True) -> RemoteServiceStatus:
         """Trigger the air conditioning to start.
 
         A state update is NOT triggered after this, as the vehicle state is unchanged.
@@ -193,6 +195,8 @@ class RemoteServices:
         _LOGGER.debug('Triggering remote air conditioning')
         # needs to be called via POST, GET is not working
         self._trigger_remote_service(_Services.REMOTE_AIR_CONDITIONING, post=True)
+        if not block:
+            return None
         result = self._block_until_done(_Services.REMOTE_AIR_CONDITIONING)
         self._trigger_state_update()
         return result
